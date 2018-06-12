@@ -1,0 +1,5 @@
+*/*.o
+*.o
+std_lib_facilities.h
+*/std_lib_facilities.h
+Stroustrup.pdf

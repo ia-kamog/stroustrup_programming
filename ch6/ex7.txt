@@ -1,0 +1,13 @@
+Logical_exp:
+	Xor_expression
+	Logical_expression '|' Xor_expression
+Xor_exp:
+	And_exp
+	Xor_exp '&' And_exp
+And_exp:
+	Primary
+	And_exp '&' Primary
+Primary:
+	Variable
+	'(' Logical_exp ')'
+	Integer

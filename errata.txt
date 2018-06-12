@@ -1,0 +1,8 @@
+65: << first << " " << second, one " is missing
+119: v.size()==0, () missing
+148: cin>>i instead of cin>>I
+154: for (double x : temps) instead of for (int x : temps); thus output on p.155 is different
+158: 130 mi/h
+191: If 3 was followed by + and -, it would be still a complete term.
+231: x%y instead of x-y in x-y=x-y*int(x/y)
+239: 1++2*3 won't cause an error after unary + was added.
