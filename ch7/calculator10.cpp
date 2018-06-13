@@ -4,6 +4,11 @@ class Token {
 public:
      char kind;
      double value;
+     string name;
+     Token() {}
+     Token(char ch) :kind{ch} {}
+     Token(char ch, double val) :kind{ch}, value{val} {}
+     Token(char ch, string n) :kind{ch}, name{n} {}
 };
 
 class Token_stream {
@@ -21,8 +26,12 @@ class Variable {
 public:
      string name;
      double value;
-}
+};
 
+double statement();
+double declaration();
+bool is_declared(string var);
+double define_name(string var, double val);
 double expression();
 double term();
 double primary();
@@ -39,6 +48,9 @@ const char quit = 'q';
 const char print = ';';
 const string prompt = "> ";
 const string result = "= ";
+const char let = 'L';
+const char name = 'a';
+const string declkey = "let";
 
 int main() try
 {
@@ -63,7 +75,7 @@ void calculate()
 	       while (t.kind==print) t=ts.get();
 	       if (t.kind==quit) return;
 	       ts.putback(t);
-	       cout << result << expression() << '\n';
+	       cout << result << statement() << '\n';
 	  } catch (exception& e) {
 	       cerr << e.what() << '\n';
 	       clean_up_mess();
@@ -73,6 +85,30 @@ void calculate()
 void clean_up_mess()
 {
      ts.ignore(print);
+}
+
+double statement()
+{
+     Token t = ts.get();
+     switch (t.kind) {
+     case let:
+	  return declaration();
+     default:
+	  ts.putback(t);
+	  return expression();
+     }
+}
+
+double declaration()
+{
+     Token t = ts.get();
+     if (t.kind != name) error("name expected in declaration");
+     string var_name = t.name;
+     Token t2 = ts.get();
+     if (t2.kind != '=') error("= missing in declaration of ", var_name);
+     double d = expression();
+     define_name(var_name, d);
+     return d;
 }
 
 double expression()
@@ -146,6 +182,8 @@ double primary()
 	  return -primary();
      case '+':
 	  return primary();
+     case name:
+	  return get_value(t.name);
      default:
 	  error("primary expected");
      }
@@ -167,7 +205,7 @@ Token Token_stream::get()
      cin >> ch;
      switch (ch) {
      case print: case quit:
-     case '(': case ')':
+     case '(': case ')': case '=':
      case '+': case '-': case '*': case '/': case '%':
 	  return Token{ch};
      case '.':
@@ -180,6 +218,13 @@ Token Token_stream::get()
 	  return Token{number,val};
      }
      default:
+	  if (isalpha(ch)) {
+	       cin.putback(ch);
+	       string s;
+	       cin >> s;
+	       if (s == declkey) return Token(let);
+	       return Token{name, s};
+	  }
 	  error("Bad token");
      }
 }
@@ -199,7 +244,7 @@ void Token_stream::ignore(char c)
 double get_value(string s)
 {
      for (const Variable& v: var_table)
-	  if (v.name == s) return.value;
+	  if (v.name == s) return v.value;
      error("get: undefined variable ", s);
 }
 
@@ -211,4 +256,18 @@ void set_value(string s, double d)
 	       return;
 	  }
      error("set: undefined variable ", s);
+}
+
+bool is_declared(string var)
+{
+     for (const Variable& v : var_table)
+	  if (v.name == var) return true;
+     return false;
+}
+
+double define_name(string var, double val)
+{
+     if (is_declared(var)) error(var, " declared twice");
+     var_table.push_back(Variable{var, val});
+     return val;
 }
