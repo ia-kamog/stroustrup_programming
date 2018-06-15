@@ -51,6 +51,7 @@ const string result = "= ";
 const char let = 'L';
 const char name = 'a';
 const string declkey = "let";
+const string quitkey = "q";
 
 int main() try
 {
@@ -206,7 +207,7 @@ Token Token_stream::get()
      char ch;
      cin >> ch;
      switch (ch) {
-     case print: case quit:
+     case print:
      case '(': case ')': case '=':
      case '+': case '-': case '*': case '/': case '%':
 	  return Token{ch};
@@ -226,9 +227,12 @@ Token Token_stream::get()
 	       while (cin.get(ch) && (isalpha(ch) || isdigit(ch)))
 		    s += ch;
 	       cin.putback(ch);
-	       if (s == declkey)
+	       if (s == quitkey)
+		    return Token{quit};
+	       else if (s == declkey)
 		    return Token{let};
-	       return Token{name,s};
+	       else
+		    return Token{name,s};
 	  }
 	  error("Bad token");
      }

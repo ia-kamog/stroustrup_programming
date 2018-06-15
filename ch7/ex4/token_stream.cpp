@@ -36,11 +36,14 @@ Token Token_stream::get()
 		      (isalpha(ch) || isdigit(ch) || ch == '_'))
 		    s += ch;
 	       cin.putback(ch);
-	       if (s == declkey)
+	       if (s == quitkey)
+		    return Token{quit};
+	       else if (s == declkey)
 		    return Token{let};
 	       else if (s == constkey)
 		    return Token{constant};
-	       return Token{name,s};
+	       else
+		    return Token{name,s};
 	  }
 	  error("Bad token");
      }

@@ -3,6 +3,7 @@
 #include "std_lib_facilities.h"
 const char number = '8';
 const char quit = 'q';
+const char help = 'h';
 const char print = ';';
 const string prompt = "> ";
 const string result = "= ";
@@ -12,6 +13,7 @@ const char name = 'a';
 const string declkey = "let";
 const string constkey = "const";
 const string quitkey = "q";
+const string helpkey = "h";
 
 class Token {
 public:

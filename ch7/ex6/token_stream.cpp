@@ -39,12 +39,13 @@ Token Token_stream::get()
 	       cin.putback(ch);
 	       if (s == quitkey)
 		    return Token{quit};
+	       else if (s == helpkey)
+		    return Token{help};
 	       else if (s == declkey)
 		    return Token{let};
 	       else if (s == constkey)
 		    return Token{constant};
-	       else
-		    return Token{name,s};
+	       return Token{name,s};
 	  }
 	  error("Bad token");
      }

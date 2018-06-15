@@ -90,6 +90,7 @@ const char constant = 'C';
 const char name = 'a';
 const string declkey = "let";
 const string constkey = "const";
+const string quitkey = "q";
 
 int main() try
 {
@@ -257,7 +258,7 @@ Token Token_stream::get()
      char ch;
      cin >> ch;
      switch (ch) {
-     case print: case quit:
+     case print:
      case '(': case ')': case '=':
      case '+': case '-': case '*': case '/': case '%':
 	  return Token{ch};
@@ -278,7 +279,9 @@ Token Token_stream::get()
 		      (isalpha(ch) || isdigit(ch) || ch == '_'))
 		    s += ch;
 	       cin.putback(ch);
-	       if (s == declkey)
+	       if (s == quitkey)
+		    return Token{quit};
+	       else if (s == declkey)
 		    return Token{let};
 	       else if (s == constkey)
 		    return Token{constant};

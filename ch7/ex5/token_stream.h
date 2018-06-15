@@ -11,7 +11,7 @@ const char constant = 'C';
 const char name = 'a';
 const string declkey = "let";
 const string constkey = "const";
-
+const string quitkey = "q";
 
 class Token {
 public:
