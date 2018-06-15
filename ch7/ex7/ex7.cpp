@@ -1,6 +1,6 @@
 /*
-  Exercise 7.5
-  Use newlines to terminate input
+  Exercise 7.7
+  Switch to using 'help' and 'quit'
   Grammar:
   Calculation:
 	Statement
