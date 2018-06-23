@@ -1,13 +1,1 @@
 std_lib_facilities.h
-ch*/ex*/*
-!ch*/ex*/*.cpp
-!ch*/ex*/*.txt
-!ch*/ex*/Makefile
-ch*/drill*/*
-!ch*/drill*/*.cpp
-!ch*/drill*/*.txt
-!ch*/drill*/Makefile
-ch*/*
-!ch*/*.cpp
-!ch*/*.txt
-!ch*/Makefile
