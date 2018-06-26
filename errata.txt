@@ -1,10 +1,12 @@
 65: << first << " " << second, one " is missing
-119: s/v\.size==0/v\.size()==0/
-148: s/cin>>i/cin>>I/
-154: s/int x : temps/double x : temps/ for the output on p.155
-158: s|m/hr|mi/h|
+119s/v\.size==0/v\.size()==0/
+148s/cin>>i/cin>>I/
+154s/int x : temps/double x : temps/ for the output on p.155
+158s|m/hr|mi/h|
 191: If 3 was followed by + and -, it would be still a complete term.
-231: s|x-y=x-y*int(x/y)|x%y=x-y*int(x/y)|
+231s|x-y=x-y*int(x/y)|x%y=x-y*int(x/y)|
 239: 1++2*3 won't cause an error after unary + was added.
-290: s/Point p2 \{10,10\}/constexpr Point p2 \{10,10\}/
-291: s/int gob = 9;/int glob = 9/
+290s/Point p2 \{10,10\}/constexpr Point p2 \{10,10\}/
+291s/int gob = 9;/int glob = 9/
+307s/int y = x.mf()/int y = x.mf(0)/
+325s/static const int/static constexpr int/ (p326)
