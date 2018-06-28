@@ -1,5 +1,5 @@
 PROG = ex8
-SRC = $(PROG).cpp book.cpp date.cpp
+SRC = $(PROG).cpp book.cpp date.cpp patron.cpp
 CC = c++
 CXXFLAGS += -std=c++14 -pedantic -Wall -O2
 CPPFLAGS += -MMD -MP

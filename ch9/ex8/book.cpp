@@ -81,11 +81,3 @@ ostream& operator<<(ostream& os, const Book& b)
 	       << "ISBN: " << b.get_isbn() << '\n'
 	       << "Genre: " << b.get_genre() << '\n';
 }
-
-std::ostream& operator<<(std::ostream& os, const Patron& p)
-{
-     return os << "Name: " << p.get_name() << '\n'
-	       << "Card Number: " << p.get_id() << '\n'
-	       << "Fees: " << p.get_fees()
-	       << (p.owes() ? " (owes)" : " (not owes)") << '\n';
-}

@@ -1,5 +1,6 @@
 #include "date.h"
 #include "book.h"
+#include "patron.h"
 #include <iostream>
 using namespace Chrono;
 using namespace std;
