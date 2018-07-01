@@ -1,4 +1,4 @@
-65: << first << " " << second, one " is missing
+65: << first << " << second, one " is missing
 119s/v\.size==0/v\.size()==0/
 148s/cin>>i/cin>>I/
 154s/int x : temps/double x : temps/ for the output on p.155
@@ -9,4 +9,7 @@
 290s/Point p2 \{10,10\}/constexpr Point p2 \{10,10\}/
 291s/int gob = 9;/int glob = 9/
 307s/int y = x.mf()/int y = x.mf(0)/
-325s/static const int/static constexpr int/ (p326)
+325s/static const int/static constexpr int/ (see p326)
+342s/HTTP document/HTML document/
+351s/int p/Point p/
+356,357s/int I/int i/;s/ist>>I/ist>>i/
