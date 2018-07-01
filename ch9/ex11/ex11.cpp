@@ -14,9 +14,11 @@ static void info(string s, const Date& d)
 
 int main()
 {
-     Date today {1970, Month::feb, 28};
+     int y, m, d;
+     cin  >> y >> m >> d;
+     Date today {y, Month(m), d};
      Date tomorrow = today;
-     tomorrow.add_day(2);
+     tomorrow.add_day(1);
      info("today", today);
      info("tomorrow", tomorrow);
 }

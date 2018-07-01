@@ -8,13 +8,7 @@
 using namespace std;
 
 Month operator++(Month& m)
-{
-     if (m == Month::dec)
-	  m = Month::jan;
-     else
-	  m = Month(int(m)+1);
-     return m;
-}
+{ return m = (m==Month::dec)? Month::jan : Month(int(m)+1); }
 
 constexpr bool leap_year(int y) { return y%4==0 && (y%400==0 || y%100!=0); }
 
@@ -60,13 +54,13 @@ void Date::add_year(int n)
 	  add_month(int(Month::dec));
 }
 
-void Date::add_day(int n)
+void Date::add_day(long n)
 {
      int md;
      while (n + d > (md=days_in_month(y,m))) {
 	  n -= md;
 	  if (++m == Month::jan)
-	       y = y == -1 ? 1 : y + 1;
+	       ++y;
      }
      // n + d <= md
      d += n;
@@ -83,7 +77,7 @@ bool operator<(const Date& d1, const Date& d2)
 {
      if (d1.year() < d2.year())
 	  return true;
-     else if (d2.year() > d2.year())
+     else if (d1.year() > d2.year())
 	  return false;
      else if (d1.month() < d2.month())
 	  return true;
@@ -95,9 +89,9 @@ bool operator<(const Date& d1, const Date& d2)
 	  return false;
 }
 
-int operator-(Date d1, Date d2)
+long operator-(Date d1, Date d2)
 {
-     int d = 0;
+     long d = 0;
      bool minus = false;
      if (d1 < d2) {
 	  swap(d1, d2);
@@ -138,9 +132,6 @@ Date next_workday(const Date& d)
      case Weekday::sat:
 	  r.add_day(2);
 	  break;
-     case Weekday::sun:
-	  r.add_day(1);
-	  break;
      default:
 	  r.add_day(1);
 	  break;
@@ -151,7 +142,13 @@ Date next_workday(const Date& d)
 int week_of_year(const Date& d)
 {
      Date x{d.year(), Month::jan, 1};
-     return (d-x)/7+1;
+     Weekday wx = weekday(x);
+     x.add_day(int(Weekday::sun)-int(wx));
+     long dd = d - x;
+     if (dd < 0)
+	  return 0;
+     else
+	  return dd/7+1; 
 }
 
 std::ostream& operator<<(std::ostream& os, Weekday w)

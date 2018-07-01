@@ -14,7 +14,7 @@ class Date {
 public:
      class Invalid_date {};
      Date(int y, Month m, int d);
-     void add_day(int n);
+     void add_day(long n);
      void add_month(int n);
      void add_year(int n);
      Month month() const { return m; }
@@ -29,7 +29,7 @@ private:
 std::ostream& operator<<(std::ostream&, const Date&);
 std::ostream& operator<<(std::ostream&, Weekday);
 Month operator++(Month&);
-int operator-(Date d1, Date d2);
+long operator-(Date d1, Date d2);
 bool operator<(const Date& d1, const Date& d2);
 bool operator==(const Date& d1, const Date& d2);
 bool operator!=(const Date& d1, const Date& d2);
