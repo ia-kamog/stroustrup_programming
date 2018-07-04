@@ -132,6 +132,30 @@ void days_since_ny_test()
 	cout << "days_since_ny failed\n";
 }
 
+void weekday_test()
+{
+    vector<Date> dv {
+	{2013, Month::dec, 19},
+	{1970, Month::may, 3},
+	{2050, Month::mar, 7}
+    };
+    vector<Weekday> cr {
+	Weekday::thu,
+	Weekday::sat,
+	Weekday::mon
+    };
+    bool fail = false;
+    for (int i = 0; i<min(dv.size(), cr.size()); ++i) {
+	Weekday r = weekday(dv[i]);
+	bool b = r != cr[i];
+	if (b)
+	    cout << "weekday(" << dv[i] << ") == " << r << " | " << cr[i];
+	fail = fail || b;
+    }
+    if (fail)
+	cout << "weekday failed\n";
+}
+
 int main()
 {
     // int y, m, d;
