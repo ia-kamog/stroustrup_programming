@@ -1,159 +1,77 @@
-/* Drill 9.5
-   Date class from 9.7.4 */
 #include "date.h"
+#include "util.h"
 #include <array>
 #include <iostream>
+#include <cmath>
 #include <utility>
 
-using namespace std;
+namespace Chrono {
+    using namespace std;
+    
+    Date::Date(int yy, Month mm, int dd)
+    {
+	if (valid_date(yy, mm, dd)) {
+	    d = dd;
+	    m = mm;
+	    y = yy;
+	} else
+	    throw Date::Invalid_date{};
+    }
 
-Month operator++(Month& m)
-{ return m = (m==Month::dec)? Month::jan : Month(int(m)+1); }
+    Date& Date::operator++()
+    {
+	if (d == month_length(y, m)) {
+	    ++m, d = 1;
+	    y = m == Month::jan ? y+1 : y;
+	} else {
+	    ++d;
+	}
+	return *this;
+    }
+    
+    void Date::add_day(long n)
+    {
+	int uny = days_until_ny(*this);
+	if (n <= uny)
+	    add_within_year(n);
+	else {
+	    n -= uny;
+	    d = 1;
+	    m = Month::jan;
+	    ++y;
+	    int dy = round(n / average_year);
+	    int x;
+	    while ((x=year_diff_days(y,y+dy)) > n)
+		--dy;
+	    y += dy;
+	    n -= x;
+	    add_within_year(n);	    
+	}
+    }
+    
+    void Date::add_month(int n)
+    {
+	div_t dy = div(n, 12);
+	add_year(dy.quot);
+	if (dy.rem + int(m) > int(Month::dec))
+	    ++y, m = Month::jan,
+		dy.rem -= int(Month::dec) - int(m);
+	m = Month(int(m) + dy.rem);
+	int ml = month_length(y, m);
+	if (d > ml)
+	    ++m, d = d - ml;
+    }
 
-constexpr bool leap_year(int y) { return y%4==0 && (y%400==0 || y%100!=0); }
+    void Date::add_within_year(int n)
+    {
+	for (int i = 0; i < n; ++i)
+	    ++*this;
+    }
 
-constexpr int days_in_month(int y, Month m)
-{
-     switch (m) {
-     case Month::feb:
-	  return leap_year(y) ? 29 : 28;
-     case Month::apr: case Month::jun:
-     case Month::sep: case Month::nov:
-	  return 30;
-     default:
-	  return 31;
-     }
-}
-
-constexpr bool valid_date(int y, Month m, int d)
-{
-     return y!=0 &&
-	  Month::jan <= m && m <= Month::dec &&
-	  1 <= d && d <= days_in_month(y, m);
-}
-
-Date::Date(int yy, Month mm, int dd)
-{
-     if (valid_date(yy, mm, dd)) {
-	  d = dd;
-	  m = mm;
-	  y = yy;
-     } else
-	  throw Date::Invalid_date{};
-}
-
-void Date::add_month(int n)
-{
-     for (int i = 1; i <= n; ++i)
-	  add_day(days_in_month(y,m));
-}
-
-void Date::add_year(int n)
-{
-     for (int i = 1; i <= n; ++i)
-	  add_month(int(Month::dec));
-}
-
-void Date::add_day(long n)
-{
-     int md;
-     while (n + d > (md=days_in_month(y,m))) {
-	  n -= md;
-	  if (++m == Month::jan)
-	       ++y;
-     }
-     // n + d <= md
-     d += n;
-}
-
-ostream& operator<<(ostream& os, const Date& d)
-{
-     return os << '(' << d.year()
-	       << ',' << int(d.month())
-	       << ',' << d.day() << ')';
-}
-
-bool operator<(const Date& d1, const Date& d2)
-{
-     if (d1.year() < d2.year())
-	  return true;
-     else if (d1.year() > d2.year())
-	  return false;
-     else if (d1.month() < d2.month())
-	  return true;
-     else if (d1.month() > d2.month())
-	  return false;
-     else if (d1.day() < d2.day())
-	  return true;
-     else
-	  return false;
-}
-
-long operator-(Date d1, Date d2)
-{
-     long d = 0;
-     bool minus = false;
-     if (d1 < d2) {
-	  swap(d1, d2);
-	  minus = true;
-     }
-     while (d1 != d2) {
-	  d2.add_day(1);
-	  ++d;
-     }
-     return minus ? -d : d;
-}
-
-bool operator==(const Date& d1, const Date& d2)
-{
-     return d1.year() == d2.year() &&
-	  d1.month() == d2.month() &&
-	  d1.day() == d2.day();
-}
-
-bool operator!=(const Date& d1, const Date& d2)
-{
-     return !(d1 == d2);
-}
-
-Weekday weekday(const Date& d)
-{
-     static const Date ref {2018, Month::jun, 25};
-     int dif = (d - ref)%7;
-     if (dif<0) dif += 7;
-     return Weekday(dif);
-}
-
-Date next_workday(const Date& d)
-{
-     Weekday w = weekday(d);
-     Date r{d};
-     switch (w) {
-     case Weekday::sat:
-	  r.add_day(2);
-	  break;
-     default:
-	  r.add_day(1);
-	  break;
-     }
-     return r;
-}
-
-int week_of_year(const Date& d)
-{
-     Date x{d.year(), Month::jan, 1};
-     Weekday wx = weekday(x);
-     x.add_day(int(Weekday::sun)-int(wx));
-     long dd = d - x;
-     if (dd < 0)
-	  return 0;
-     else
-	  return dd/7+1; 
-}
-
-std::ostream& operator<<(std::ostream& os, Weekday w)
-{
-     constexpr array<const char*, 7>
-	  names { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-     return os << names[size_t(w)];
+    void Date::add_year(int n)
+    {
+        if (d == 29 && m == Month::feb && !leap_year(y+n))
+	    d = 1, m = Month::mar;
+	y += n;
+    }
 }
